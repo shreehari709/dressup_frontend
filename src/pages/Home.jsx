@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { products, categories } from "../data/Product";
+import AddToCartButton from "../components/AddToCartButton";
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -18,10 +19,11 @@ export default function Home() {
         background: "#FAF9F6",
         minHeight: "100vh",
         paddingBottom: 120,
+        marginTop: 60,
       }}
     >
       {/* Search Bar */}
-      <div style={{ padding: "14px 20px 8px", marginTop: 70 }}>
+      {/* <div style={{ padding: "14px 20px 8px", marginTop: 70 }}>
         <div
           style={{
             display: "flex",
@@ -62,7 +64,7 @@ export default function Home() {
             }}
           />
         </div>
-      </div>
+      </div> */}
 
       {/* Hero Banner */}
       <div style={{ padding: "12px 20px" }}>
@@ -142,7 +144,7 @@ export default function Home() {
             </p>
 
             <Link
-              to="/shop"
+              to="/collections"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -165,7 +167,7 @@ export default function Home() {
       </div>
 
       {/* Categories */}
-      <div style={{ padding: "20px 20px 0" }}>
+      {/* <div style={{ padding: "20px 20px 0" }}>
         <div
           style={{
             display: "flex",
@@ -186,7 +188,7 @@ export default function Home() {
           </h3>
 
           <Link
-            to="/shop"
+            to="/collections"
             style={{
               fontSize: 12,
               color: "#C9848A",
@@ -232,7 +234,7 @@ export default function Home() {
             </button>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Popular Section */}
       <div style={{ padding: "22px 20px 0" }}>
@@ -256,7 +258,7 @@ export default function Home() {
           </h3>
 
           <Link
-            to="/shop"
+            to="/collections"
             style={{
               fontSize: 12,
               color: "#C9848A",
@@ -276,13 +278,10 @@ export default function Home() {
           }}
         >
           {filtered.map((product) => (
-           <Link
-  key={product.id}
-  to={`/product/${product.id}`}
-  style={{ textDecoration: "none" }}
->
-  <ProductCard product={product} />
-</Link>
+            <ProductCard
+              key={product.id}
+              product={product}
+            />
           ))}
         </div>
       </div>
@@ -301,83 +300,84 @@ function ProductCard({ product }) {
         position: "relative",
       }}
     >
-      {/* Image */}
-      <div
+      {/* Clickable Product Area */}
+      <Link
+        to={`/product/${product.id}`}
         style={{
-          position: "relative",
-          height: 180,
-          background: "#f5ede8",
-          overflow: "hidden",
+          textDecoration: "none",
+          color: "inherit",
         }}
       >
-        <img
-          src={product.image}
-          alt={product.name}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
-          onError={(e) => {
-            e.target.style.display = "none";
-          }}
-        />
-
-        {/* Tag */}
-        {product.tag && (
-          <span
-            style={{
-              position: "absolute",
-              top: 10,
-              left: 10,
-              background: "#1a1a1a",
-              color: "white",
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: 1,
-              padding: "3px 8px",
-              borderRadius: 20,
-              textTransform: "uppercase",
-            }}
-          >
-            {product.tag}
-          </span>
-        )}
-      </div>
-
-      {/* Info */}
-      <div style={{ padding: "10px 12px 12px" }}>
-        <p
-          style={{
-            fontSize: 12,
-            color: "#999",
-            margin: "0 0 3px",
-            textTransform: "uppercase",
-            letterSpacing: 0.5,
-          }}
-        >
-          {product.category}
-        </p>
-
-        <p
-          style={{
-            fontSize: 13,
-            fontWeight: 700,
-            color: "#1a1a1a",
-            margin: "0 0 6px",
-            lineHeight: 1.3,
-          }}
-        >
-          {product.name}
-        </p>
-
+        {/* Image */}
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            position: "relative",
+            height: 180,
+            background: "#f5ede8",
+            overflow: "hidden",
           }}
         >
+          <img
+            src={product.image}
+            alt={product.name}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+            onError={(e) => {
+              e.target.style.display = "none";
+            }}
+          />
+
+          {/* Tag */}
+          {product.tag && (
+            <span
+              style={{
+                position: "absolute",
+                top: 10,
+                left: 10,
+                background: "#1a1a1a",
+                color: "white",
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: 1,
+                padding: "3px 8px",
+                borderRadius: 20,
+                textTransform: "uppercase",
+              }}
+            >
+              {product.tag}
+            </span>
+          )}
+        </div>
+
+        {/* Info */}
+        <div style={{ padding: "10px 12px 6px" }}>
+          <p
+            style={{
+              fontSize: 12,
+              color: "#999",
+              margin: "0 0 3px",
+              textTransform: "uppercase",
+              letterSpacing: 0.5,
+            }}
+          >
+            {product.category}
+          </p>
+
+          <p
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              color: "#1a1a1a",
+              margin: "0 0 6px",
+              lineHeight: 1.3,
+            }}
+          >
+            {product.name}
+          </p>
+
           <div>
             <span
               style={{
@@ -400,24 +400,17 @@ function ProductCard({ product }) {
               ₹{product.originalPrice.toLocaleString()}
             </span>
           </div>
-
-          <button
-            style={{
-              background: "#1a1a1a",
-              color: "white",
-              border: "none",
-              borderRadius: 50,
-              padding: "6px 12px",
-              fontSize: 10,
-              fontWeight: 700,
-              cursor: "pointer",
-              letterSpacing: 0.5,
-            }}
-          >
-            Add
-          </button>
         </div>
-      </div>
+      </Link>
+
+      {/* Add To Cart Button */}
+      {/* <div style={{ padding: "0 12px 12px" }}>
+        <AddToCartButton
+          product={product}
+          size="M"
+          fullWidth={true}
+        />
+      </div> */}
     </div>
   );
 }

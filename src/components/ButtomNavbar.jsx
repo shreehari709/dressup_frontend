@@ -97,7 +97,7 @@ export default function BottomNavbar() {
 
           {/* Website Title */}
           <h1 className="text-xl font-bold tracking-wide">
-            Fhoolsipyari
+            Phoolsipyari
           </h1>
         </div>
       </div>

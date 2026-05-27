@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { products } from "../data/Product";
+import { useCart } from "../context/CartContext";
 
 const sizeGuide = [
   { size: "XS", chest: "32", waist: "26", hip: "35" },
@@ -28,6 +29,7 @@ const productDetails = {
 };
 
 export default function Product() {
+  const { addToCart } = useCart();
   const { id } = useParams();
   const navigate = useNavigate();
   const product = products.find((p) => p.id === Number(id));
@@ -50,10 +52,17 @@ export default function Product() {
   const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
   const description = productDetails[product.category] || productDetails["Kurtas"];
 
-  const handleAddToBag = () => {
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
-  };
+const handleAddToBag = () => {
+  if (!selectedSize) return;
+
+  addToCart(product, selectedSize);
+
+  setAdded(true);
+
+  setTimeout(() => {
+    setAdded(false);
+  }, 2000);
+};
 
   return (
     <div style={{ background: "#FAF9F6", minHeight: "100vh", paddingBottom: 120 }}>
@@ -220,26 +229,47 @@ export default function Product() {
       </div>
 
       {/* Add to Bag CTA */}
-      <div style={{
-        position: "fixed", bottom: 80, left: 0, right: 0,
-        padding: "12px 20px",
-        background: "linear-gradient(to top, #FAF9F6 80%, transparent)",
-        zIndex: 50,
-      }}>
-        <button
-          onClick={handleAddToBag}
-          style={{
-            width: "100%",
-            background: added ? "#4caf50" : "#1a1a1a",
-            color: "white", border: "none", borderRadius: 50,
-            padding: "16px", fontSize: 14, fontWeight: 700,
-            cursor: "pointer", letterSpacing: 1.5, textTransform: "uppercase",
-            transition: "background 0.3s",
-          }}
-        >
-          {added ? "✓ Added to Bag!" : selectedSize ? `Add to Bag — ₹${product.price.toLocaleString()}` : "Select a Size First"}
-        </button>
-      </div>
+   {/* Add to Bag CTA */}
+<div
+  style={{
+    position: "fixed",
+    bottom: 80,
+    left: 0,
+    right: 0,
+    padding: "12px 20px",
+    background: "linear-gradient(to top, #FAF9F6 80%, transparent)",
+    zIndex: 50,
+  }}
+>
+  <button
+    onClick={handleAddToBag}
+    disabled={!selectedSize}
+    style={{
+      width: "100%",
+      background: added
+        ? "#4caf50"
+        : selectedSize
+        ? "#1a1a1a"
+        : "#999",
+      color: "white",
+      border: "none",
+      borderRadius: 50,
+      padding: "16px",
+      fontSize: 14,
+      fontWeight: 700,
+      cursor: selectedSize ? "pointer" : "not-allowed",
+      letterSpacing: 1.5,
+      textTransform: "uppercase",
+      transition: "all 0.3s ease",
+    }}
+  >
+    {added
+      ? "✓ Added to Bag!"
+      : selectedSize
+      ? `Add to Bag — ₹${product.price.toLocaleString()}`
+      : "Select a Size First"}
+  </button>
+</div>
     </div>
   );
 }
