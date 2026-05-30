@@ -3,7 +3,7 @@ import logo from '../assets/favicon.svg';
 import {NavLink} from 'react-router-dom';
 const Navbar = () => {
   return (
-    <div className="flex items-center gap-2 py-4 font-medium">
+    <div className="flex items-center gap-2 py-4 font-medium overflow-x-hidden">
       <img src={logo} alt="Logo" className="h-10 w-10" />
       <h1 className="text-xl ">
         PhoolsiPyari
@@ -24,11 +24,11 @@ const Navbar = () => {
             Cart
           </NavLink>
         </li>
-        <li className="hover:text-gray-900 cursor-pointer transition">
+        {/* <li className="hover:text-gray-900 cursor-pointer transition">
           <NavLink to="/orders" className={({ isActive }) => isActive ? "text-gray-900" : ""}>
             Orders
           </NavLink>
-        </li>
+        </li> */}
         <li className="hover:text-gray-900 cursor-pointer transition">
           <NavLink to="/profile" className={({ isActive }) => isActive ? "text-gray-900" : ""}>
             Profile

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useOrders } from "../context/OrderContext";
+import PaymentSuccess from "./PaymentSuccess";
+import PaymentFailed from "./PaymentFailed";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ export default function Checkout() {
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [contact, setContact] = useState("");
   const [pin, setPin] = useState("");
   const [upi, setUpi] = useState("");
 
@@ -86,6 +89,14 @@ export default function Checkout() {
         />
 
         <input
+          placeholder="Contact Number"
+          value={contact}
+          onChange={(e) => setContact(e.target.value)}
+          style={inputStyle}
+        />
+      
+
+        <input
           placeholder="Pin Code"
           value={pin}
           onChange={(e) => setPin(e.target.value)}
@@ -128,6 +139,19 @@ export default function Checkout() {
       </div>
     </div>
   );
+
+  const UpdateProfile = (name, address, contact) => {
+    // Logic to update the user's profile information
+    // This could involve making an API call to the backend to save the updated details
+    console.log("Profile Updated:", { name, address, contact });
+  };
+  
+  if(checkoutSuccess) {
+    return <PaymentSuccess />;
+  } else if(checkoutFailed) {
+    return <PaymentFailed />;
+  }  
+
 }
 
 const inputStyle = {

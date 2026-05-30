@@ -16,9 +16,10 @@ import NavSwitch from './components/NavSwitch';
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFailed from "./pages/PaymentFailed";
 import Orders from "./pages/Orders";
+import EditProfile from './pages/EditProfile';
 const App = () => {
   return (
-    <div className='px-4 sm:px-[5vw] md:px-[7.5vw] lg:px-[2vw] '>
+    <div className='px-4 sm:px-[5vw] md:px-[7.5vw] lg:px-[2vw] scroll-smooth overflow-x-hidden w-full'>
       <>
     
      < NavSwitch />
@@ -38,6 +39,7 @@ const App = () => {
         <Route path='/orders/:id' element={<OrderDetails />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/about' element={<About />} />
+        <Route path='/edit-profile' element={<EditProfile />} />
   
       </Routes>
       

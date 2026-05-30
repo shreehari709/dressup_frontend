@@ -62,7 +62,6 @@ const navItems = [
   { path: "/", icon: HomeIcon },
   { path: "/collections", icon: GridIcon },
   { path: "/cart", icon: BagIcon },
-  { path: "/orders", icon: OrderIcon },
   { path: "/profile", icon: UserIcon },
 ];
 
@@ -76,9 +75,9 @@ export default function BottomNavbar() {
     fixed
     top-0
     left-0
-    w-full
+    w-screen
     z-50
-    bg-gradient-to-r
+    bg-linear-to-r
     from-pink-100
     via-rose-100
     to-pink-200

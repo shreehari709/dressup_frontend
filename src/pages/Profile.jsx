@@ -1,13 +1,19 @@
 import { products } from "../data/Product";
-
+import EditProfile from "./EditProfile";
+import UpdateProfile from "./EditProfile";
+//import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import WhatsAppButton from "../components/WhatsappButton";
 const menuItems = [
-  { icon: "📦", label: "My Orders", sub: "3 active orders" },
-  { icon: "💳", label: "Payment Settings", sub: "Cards & UPI" },
-  { icon: "📍", label: "Saved Addresses", sub: "2 addresses" },
-  { icon: "🔔", label: "Notifications", sub: "Manage alerts" },
-  { icon: "🛡️", label: "Privacy & Policy", sub: "" },
+  { icon: "📦", label: "My Orders", sub: "" },
   { icon: "❓", label: "Help Center", sub: "" },
 ];
+
+
+const UserProfile = {
+  name: UpdateProfile.username,
+  email: UpdateProfile.email,
+  phone: UpdateProfile.phoneNumber,
+}
 
 const recentOrders = [products[0], products[1], products[2]];
 
@@ -33,27 +39,29 @@ export default function Profile() {
         </div>
         <div style={{ flex: 1 }}>
           <h3 style={{ fontSize: 18, fontWeight: 800, color: "#1a1a1a", margin: "0 0 3px", fontFamily: "Georgia, serif" }}>
-            Priya Sharma
+            {UserProfile.name || "not registered"}
           </h3>
-          <p style={{ fontSize: 13, color: "#999", margin: 0 }}>+91 98765 43210</p>
+          <p style={{ fontSize: 13, color: "#999", margin: 0 }}>{UserProfile.email || "not available"}</p>
+          <p style={{ fontSize: 13, color: "#999", margin: 0 }}>{UserProfile.phone || "not available"}</p>
         </div>
         <button style={{
           background: "#f5ede8", border: "none", borderRadius: 50,
-          padding: "8px 14px", fontSize: 12, fontWeight: 600,
+          padding: "8px 11px", fontSize: 12, fontWeight: 600,
+          marginLeft: 10,
           color: "#C9848A", cursor: "pointer",
         }}>
-          Edit
+          <a href="/edit-profile" style={{ textDecoration: "none", color: "inherit" }}>Edit Profile</a>
         </button>
       </div>
 
       {/* Stats */}
-      <div style={{
+      {/* <div style={{
         display: "flex", background: "white",
         borderBottom: "1px solid #f5ede8",
       }}>
         {[
           { label: "Orders", value: "12" },
-          { label: "Wishlist", value: "8" },
+          { label: "Charts", value: "8" },
           { label: "Reviews", value: "5" },
         ].map((stat) => (
           <div key={stat.label} style={{
@@ -64,10 +72,10 @@ export default function Profile() {
             <p style={{ fontSize: 12, color: "#999", margin: 0 }}>{stat.label}</p>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* Orders */}
-      <div style={{ padding: "20px 20px 0" }}>
+      {/* <div style={{ padding: "20px 20px 0" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
           <h4 style={{ fontSize: 15, fontWeight: 700, color: "#1a1a1a", margin: 0 }}>Recent Orders</h4>
           <button style={{ background: "none", border: "none", fontSize: 12, color: "#C9848A", fontWeight: 600, cursor: "pointer" }}>
@@ -99,7 +107,7 @@ export default function Profile() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Menu Items */}
       <div style={{ padding: "20px 20px 0" }}>
@@ -125,6 +133,158 @@ export default function Profile() {
           ))}
         </div>
       </div>
+
+
+   {/* About Us */}
+<div
+  style={{
+    marginTop: 50,
+    background: "linear-gradient(135deg, #fff7f7 0%, #fdf1f1 100%)",
+    borderRadius: 28,
+    padding: "32px 24px",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.05)",
+    border: "1px solid #f3dede",
+  }}
+>
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 10,
+      marginBottom: 18,
+    }}
+  >
+    <div
+      style={{
+        width: 42,
+        height: 42,
+        borderRadius: "50%",
+        background: "#f9d9dd",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: 20,
+      }}
+    >
+      🌸
+    </div>
+
+    <h1
+      style={{
+        margin: 0,
+        fontSize: 28,
+        fontWeight: 700,
+        color: "#1a1a1a",
+        fontFamily: "Georgia, serif",
+      }}
+    >
+      About Us
+    </h1>
+  </div>
+
+  <p
+    style={{
+      fontSize: 15,
+      lineHeight: 1.9,
+      color: "#555",
+      textAlign: "center",
+      maxWidth: 700,
+      margin: "0 auto",
+    }}
+  >
+    At <strong style={{ color: "#C9848A" }}>Phool Si Pyari</strong>,
+    fashion is more than clothing — it’s confidence, elegance, and
+    self-expression. We create thoughtfully curated collections inspired
+    by timeless beauty and modern femininity. From everyday comfort to
+    statement festive wear, every piece is designed to make you feel as
+    beautiful as a blooming flower ✨
+  </p>
+</div>
+
+{/* Instagram Section */}
+<div
+  style={{
+    marginTop: 28,
+    marginBottom: 40,
+    background: "white",
+    borderRadius: 24,
+    padding: "24px 20px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    boxShadow: "0 6px 18px rgba(0,0,0,0.05)",
+    border: "1px solid #f3ece8",
+  }}
+>
+  <div
+    style={{
+      width: 58,
+      height: 58,
+      borderRadius: "50%",
+      background:
+        "linear-gradient(135deg, #feda75, #fa7e1e, #d62976, #962fbf)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: 28,
+      color: "white",
+      marginBottom: 14,
+      boxShadow: "0 6px 16px rgba(214,41,118,0.25)",
+    }}
+  >
+    📸
+  </div>
+
+  <h3
+    style={{
+      margin: "0 0 8px",
+      fontSize: 18,
+      color: "#1a1a1a",
+      fontWeight: 700,
+    }}
+  >
+    Follow Our Journey
+  </h3>
+
+  <p
+    style={{
+      margin: "0 0 16px",
+      fontSize: 14,
+      color: "#777",
+      lineHeight: 1.6,
+      maxWidth: 320,
+    }}
+  >
+    Daily outfit inspiration, new arrivals, behind-the-scenes &
+    everything beautiful ✨
+  </p>
+
+  <a
+    href="https://instagram.com/phoolsipyarii"
+    target="_blank"
+    rel="noreferrer"
+    style={{
+      textDecoration: "none",
+      background: "linear-gradient(135deg, #d62976, #fa7e1e)",
+      color: "white",
+      padding: "12px 24px",
+      borderRadius: 50,
+      fontSize: 13,
+      fontWeight: 700,
+      letterSpacing: 1,
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 8,
+      boxShadow: "0 6px 16px rgba(214,41,118,0.2)",
+    }}
+  >
+    <span>Instagram</span>
+    <span>@phoolsipyarii</span>
+  </a>
+</div>
 
       {/* Logout */}
       <div style={{ padding: "16px 20px" }}>
