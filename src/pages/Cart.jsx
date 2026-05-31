@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +11,20 @@ export default function Cart() {
     (sum, item) => sum + item.price * item.qty,
     0
   );
+
+
+const [loginError, setLoginError] = useState("");
+
+const handleCheckout = () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    setLoginError("Please login before checkout");
+    return;
+  }
+
+  navigate("/checkout");
+};
 
   const shipping = subtotal > 3000 ? 0 : 99;
 
@@ -432,25 +447,67 @@ export default function Cart() {
         </div>
 
         {/* Checkout Button */}
-        <button
-         onClick={() => navigate("/Checkout")}
-          style={{
-            width: "100%",
-            marginTop: 14,
-            background: "#1a1a1a",
-            color: "white",
-            border: "none",
-            borderRadius: 50,
-            padding: "16px",
-            fontSize: 14,
-            fontWeight: 700,
-            cursor: "pointer",
-            letterSpacing: 1.5,
-            textTransform: "uppercase",
-          }}
-        >
-          Checkout → ₹{total.toLocaleString()}
-        </button>
+      <button
+  onClick={handleCheckout}
+  style={{
+    width: "100%",
+    marginTop: 14,
+    background: "#1a1a1a",
+    color: "white",
+    border: "none",
+    borderRadius: 50,
+    padding: "16px",
+    fontSize: 14,
+    fontWeight: 700,
+    cursor: "pointer",
+    letterSpacing: 1.5,
+    textTransform: "uppercase",
+    transition: "all 0.3s ease",
+  }}
+>
+  Checkout → ₹{total.toLocaleString()}
+</button>
+{loginError && (
+  <p
+    style={{
+      position: "relative",
+      marginTop: 10,
+      textAlign: "center",
+      color: "#e53935",
+      fontSize: 13,
+      fontWeight: 500,
+      background: "#fff0f0",
+      padding: "10px 12px",
+      borderRadius: 12,
+      border: "1px solid #ffd6d6",
+    }}
+  >
+    {loginError}
+  </p>
+)}
+      <div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    marginTop: 10,
+  }}
+>
+  <button
+    onClick={() => navigate("/auth")}
+    style={{
+      color: "#FFFFFF",
+      fontSize: 13,
+      fontWeight: 500,
+      background: "#000000",
+      padding: "10px 16px",
+      borderRadius: 12,
+      border: "1px solid #ffd6d6",
+      cursor: "pointer",
+    }}
+  >
+    Login / Register
+  </button>
+</div>
       </div>
     </div>
   );

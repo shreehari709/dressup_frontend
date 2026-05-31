@@ -4,13 +4,29 @@ import { useCart } from "../context/CartContext";
 import { useOrders } from "../context/OrderContext";
 import PaymentSuccess from "./PaymentSuccess";
 import PaymentFailed from "./PaymentFailed";
+import { Axis3DIcon } from "lucide-react";
+import axios from "axios";
 
 export default function Checkout() {
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   const fetchRazorpay = async () => {
+  //     const responseRazorpay = await axios.post(backend_ur + "/order/placeorder/razorpay");
+
+  //     if (responseRazorpay.data.success) {
+  //       console.log(responseRazorpay.data.message);
+  //     }
+  //   };
+
+  //   fetchRazorpay();
+  // }, []);
+
   const { cart, totalPrice, clearCart } = useCart();
 
   const { placeOrder } = useOrders();
+
+
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -61,6 +77,31 @@ export default function Checkout() {
         marginTop: 70 
       }}
     >
+         {/* <button
+      onClick={() => navigate("/auth")}
+      className="
+        fixed
+        top-4
+        right-4
+        z-50
+        bg-linear-to-r
+        from-pink-400
+        to-rose-400
+        text-white
+        px-5
+        py-2.5
+        rounded-full
+        font-semibold
+        text-sm
+        shadow-lg
+        hover:scale-105
+        transition-all
+        duration-300
+      "
+    >
+      Login/Register
+    </button> */}
+
       <h2>Checkout</h2>
 
       <div
@@ -102,13 +143,13 @@ export default function Checkout() {
           onChange={(e) => setPin(e.target.value)}
           style={inputStyle}
         />
-
+{/* 
         <input
           placeholder="UPI ID"
           value={upi}
           onChange={(e) => setUpi(e.target.value)}
           style={inputStyle}
-        />
+        /> */}
       </div>
 
       <div

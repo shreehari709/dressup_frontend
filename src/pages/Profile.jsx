@@ -1,24 +1,58 @@
 import { products } from "../data/Product";
-import EditProfile from "./EditProfile";
-import UpdateProfile from "./EditProfile";
+//import EditProfile from "./EditProfile";
+//import UpdateProfile from "./EditProfile";
 //import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import { Link, useNavigate } from "react-router-dom";
 import WhatsAppButton from "../components/WhatsappButton";
+import { div } from "framer-motion/client";
+import { useState, useEffect } from "react";
 const menuItems = [
   { icon: "📦", label: "My Orders", sub: "" },
-  { icon: "❓", label: "Help Center", sub: "" },
+
 ];
 
 
-const UserProfile = {
-  name: UpdateProfile.username,
-  email: UpdateProfile.email,
-  phone: UpdateProfile.phoneNumber,
-}
+// const UserProfile = {
+//   name: UpdateProfile.username,
+//   email: UpdateProfile.email,
+//   phone: UpdateProfile.phoneNumber,
+// }
 
-const recentOrders = [products[0], products[1], products[2]];
+//const recentOrders = [products[0], products[1], products[2]];
+
+
+
 
 export default function Profile() {
+// console.log("Profile Rendered");
+//   const users = JSON.parse(localStorage.getItem("user"));
+
+//   console.log(users);
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState(null);
+
+ useEffect(() => {
+  try {
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/auth");
+  };
+
   return (
+
     <div style={{ background: "#FAF9F6", minHeight: "120vh", paddingBottom: 140, marginTop: 60}}>
 
       {/* Profile Header */}
@@ -26,7 +60,7 @@ export default function Profile() {
         background: "white",
         padding: "24px 20px 20px",
         display: "flex", alignItems: "center", gap: 16,
-        borderBottom: "1px solid #f5ede8",
+        borderBottom: "1px solid #f5ede8",position: "relative",
       }}>
         <div style={{
           width: 64, height: 64, borderRadius: "50%",
@@ -35,23 +69,19 @@ export default function Profile() {
           fontSize: 26,
           border: "3px solid #f0ece8",
         }}>
-          👩
+          {user?.name?.charAt(0)?.toUpperCase() || "👩"}
         </div>
         <div style={{ flex: 1 }}>
           <h3 style={{ fontSize: 18, fontWeight: 800, color: "#1a1a1a", margin: "0 0 3px", fontFamily: "Georgia, serif" }}>
-            {UserProfile.name || "not registered"}
+           {user?.name || "Guest User"}
           </h3>
-          <p style={{ fontSize: 13, color: "#999", margin: 0 }}>{UserProfile.email || "not available"}</p>
-          <p style={{ fontSize: 13, color: "#999", margin: 0 }}>{UserProfile.phone || "not available"}</p>
+          <p style={{ fontSize: 13, color: "#999", margin: 0 }}>{user?.email || "Not Available"}</p>
+          <p style={{ fontSize: 13, color: "#999", margin: 0 }}>{user?.contactNumber || "Not Available"}</p>
         </div>
-        <button style={{
-          background: "#f5ede8", border: "none", borderRadius: 50,
-          padding: "8px 11px", fontSize: 12, fontWeight: 600,
-          marginLeft: 10,
-          color: "#C9848A", cursor: "pointer",
-        }}>
-          <a href="/edit-profile" style={{ textDecoration: "none", color: "inherit" }}>Edit Profile</a>
-        </button>
+        <div >
+          <WhatsAppButton/>
+        </div>
+
       </div>
 
       {/* Stats */}
@@ -110,7 +140,7 @@ export default function Profile() {
       </div> */}
 
       {/* Menu Items */}
-      <div style={{ padding: "20px 20px 0" }}>
+      {/* <div style={{ padding: "20px 20px 0" }}>
         <div style={{
           background: "white", borderRadius: 20,
           overflow: "hidden",
@@ -132,10 +162,11 @@ export default function Profile() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
 
    {/* About Us */}
+
 <div
   style={{
     marginTop: 50,
@@ -203,6 +234,7 @@ export default function Profile() {
 </div>
 
 {/* Instagram Section */}
+
 <div
   style={{
     marginTop: 28,
@@ -287,16 +319,31 @@ export default function Profile() {
 </div>
 
       {/* Logout */}
-      <div style={{ padding: "16px 20px" }}>
-        <button style={{
-          width: "100%", background: "#fff0f0",
-          color: "#e05555", border: "1.5px solid #fdd",
-          borderRadius: 50, padding: "14px",
-          fontSize: 14, fontWeight: 700, cursor: "pointer",
-        }}>
-          Log Out
-        </button>
-      </div>
+     <div style={{ padding: "16px 20px" }}>
+  <button
+    onClick={handleLogout}
+    style={{
+      width: "100%",
+      background: "#fff0f0",
+      color: "#e05555",
+      border: "1.5px solid #fdd",
+      borderRadius: 50,
+      padding: "14px",
+      fontSize: 14,
+      fontWeight: 700,
+      cursor: "pointer",
+    }}
+  >
+    Log Out
+  </button>
+</div>
     </div>
+
+  // <div>
+  //   <h1 style={{marginTop:"300px"}}>Profile Page Working</h1>;
+  // </div>
+
   );
 }
+
+

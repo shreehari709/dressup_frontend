@@ -16,7 +16,7 @@ function updateProfile(username, email, phoneNumber) {
   return (
     <div>
         <form style={{ maxWidth: 400, margin: "40px auto", background: "white", padding: 20, borderRadius: 8 }}>
-          <h2 style={{ textAlign: "center", marginBottom: 24, color: "#1a1a1a" }}>Edit Profile</h2>
+          <h2 style={{ textAlign: "center", marginBottom: 24, marginTop: 34,  color: "#1a1a1a", fontWeight: 700, }}>Edit Profile</h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 <input placeholder="Full Name" name="username" value={username} type="text" style={{ padding: 10, borderRadius: 4, border: "1px solid #ccc" }} />
                 <input placeholder="Email" name="email" value={email} type="email" style={{ padding: 10, borderRadius: 4, border: "1px solid #ccc" }} />
