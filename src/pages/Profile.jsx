@@ -72,11 +72,29 @@ export default function Profile() {
           {user?.name?.charAt(0)?.toUpperCase() || "👩"}
         </div>
         <div style={{ flex: 1 }}>
-          <h3 style={{ fontSize: 18, fontWeight: 800, color: "#1a1a1a", margin: "0 0 3px", fontFamily: "Georgia, serif" }}>
-           {user?.name || "Guest User"}
-          </h3>
-          <p style={{ fontSize: 13, color: "#999", margin: 0 }}>{user?.email || "Not Available"}</p>
-          <p style={{ fontSize: 13, color: "#999", margin: 0 }}>{user?.contactNumber || "Not Available"}</p>
+          <h3
+  style={{
+    fontSize: 18,
+    fontWeight: 800,
+    color: "#1a1a1a",
+    margin: "0 0 3px",
+    fontFamily: "Georgia, serif",
+  }}
+>
+  {user ? user.name : "Welcome"}
+</h3>
+
+<p
+  style={{
+    fontSize: 13,
+    color: "#999",
+    margin: 0,
+  }}
+>
+  {user
+    ? user.email
+    : "Sign in to manage your account"}
+</p>
         </div>
         <div >
           <WhatsAppButton/>
@@ -319,23 +337,43 @@ export default function Profile() {
 </div>
 
       {/* Logout */}
-     <div style={{ padding: "16px 20px" }}>
-  <button
-    onClick={handleLogout}
-    style={{
-      width: "100%",
-      background: "#fff0f0",
-      color: "#e05555",
-      border: "1.5px solid #fdd",
-      borderRadius: 50,
-      padding: "14px",
-      fontSize: 14,
-      fontWeight: 700,
-      cursor: "pointer",
-    }}
-  >
-    Log Out
-  </button>
+   {/* Auth Button */}
+<div style={{ padding: "16px 20px" }}>
+  {user ? (
+    <button
+      onClick={handleLogout}
+      style={{
+        width: "100%",
+        background: "#fff0f0",
+        color: "#e05555",
+        border: "1.5px solid #fdd",
+        borderRadius: 50,
+        padding: "14px",
+        fontSize: 14,
+        fontWeight: 700,
+        cursor: "pointer",
+      }}
+    >
+      Log Out
+    </button>
+  ) : (
+    <button
+      onClick={() => navigate("/auth")}
+      style={{
+        width: "100%",
+        background: "#1a1a1a",
+        color: "white",
+        border: "none",
+        borderRadius: 50,
+        padding: "14px",
+        fontSize: 14,
+        fontWeight: 700,
+        cursor: "pointer",
+      }}
+    >
+      Sign In / Register
+    </button>
+  )}
 </div>
     </div>
 

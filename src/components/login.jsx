@@ -2,54 +2,60 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { backendUrl } from "../config";
+import "./progress.css";
 export default function Login() {
   const navigate = useNavigate();
-
+const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const res = await axios.post(
-        `${backendUrl}/auth/login`,
-        {
-          email: form.email,
-          password: form.password,
-        }
-      );
+  setLoading(true);
 
-      if (res.data.success) {
-        localStorage.setItem(
-          "token",
-          res.data.token
-        );
-
-        localStorage.setItem(
-          "user",
-          JSON.stringify(res.data.user)
-        );
-
-        alert("Login Successful");
-
-        // Redirect after login
-        navigate("/profile");
-        // or navigate("/checkout");
-      } else {
-        alert(res.data.message);
+  try {
+    const res = await axios.post(
+      `${backendUrl}/auth/login`,
+      {
+        email: form.email,
+        password: form.password,
       }
-    } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Login Failed"
-      );
-    }
-  };
+    );
 
+    if (res.data.success) {
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem(
+        "user",
+        JSON.stringify(res.data.user)
+      );
+
+      alert("Login Successful");
+      navigate("/profile");
+    } else {
+      alert(res.data.message);
+    }
+  } catch (error) {
+    alert(
+      error.response?.data?.message ||
+      "Login Failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
   return (
+  <>
+    {loading && (
+      <div className="progress-overlay">
+        <div className="progress">
+          <div className="progress-value"></div>
+        </div>
+      </div>
+    )}
+
     <form
       className="space-y-4"
       onSubmit={handleSubmit}
@@ -96,10 +102,12 @@ export default function Login() {
 
       <button
         type="submit"
-        className="w-full bg-black text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
+        disabled={loading}
+        className="w-full bg-black text-white py-3 rounded-xl font-semibold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Login
+        {loading ? "Logging in..." : "Login"}
       </button>
     </form>
-  );
+  </>
+);
 }

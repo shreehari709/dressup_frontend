@@ -116,13 +116,15 @@ export default function Collection() {
 
       {/* Product Grid */}
       <div style={{ padding: "4px 20px 0" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 14,
-          }}
-        >
+       <div
+  style={{
+    display: "grid",
+    gridTemplateColumns:
+      "repeat(auto-fill, minmax(150px, 1fr))",
+    gap: 20,
+    alignItems: "start",
+  }}
+>
           {filtered.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -158,53 +160,65 @@ function ProductCard({ product }) {
       }}
     >
       <div
-        style={{
-          background: "white",
-          borderRadius: 20,
-          overflow: "hidden",
-          boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
-          position: "relative",
-        }}
-      >
+  style={{
+    background: "white",
+    borderRadius: 20,
+    overflow: "hidden",
+    boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
+    width: "100%",
+    maxWidth: 320,
+    margin: "0 auto",
+    transition: "transform 0.2s ease",
+  }}
+>
         {/* Image */}
-        <div
-          style={{
-            position: "relative",
-            height: 180,
-            background: "#f5ede8",
-          }}
-        >
-          <img
-            src={product.image}
-            alt={product.name}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-            onError={(e) => {
-              e.target.style.display = "none";
-            }}
-          />
+     <div
+  style={{
+    position: "relative",
+    width: "100%",
+    aspectRatio: "4 / 5",
+    background: "#f5ede8",
+    overflow: "hidden",
+  }}
+>
+      <img
+  src={product.images?.[0] || product.image}
+  alt={product.name}
+  style={{
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    display: "block",
+  }}
+  onError={(e) => {
+    e.target.style.display = "none";
+  }}
+/>
 
           {product.tag && (
-            <span
-              style={{
-                position: "absolute",
-                top: 10,
-                left: 10,
-                background: "#1a1a1a",
-                color: "white",
-                fontSize: 9,
-                fontWeight: 700,
-                letterSpacing: 1,
-                padding: "3px 8px",
-                borderRadius: 20,
-                textTransform: "uppercase",
-              }}
-            >
-              {product.tag}
-            </span>
+      <span
+  style={{
+    position: "absolute",
+    top: 12,
+    left: 12,
+    zIndex: 2,
+
+    background: "#111",
+    color: "#fff",
+
+    fontSize: 11,
+    fontWeight: 600,
+    letterSpacing: "0.5px",
+
+    padding: "5px 10px",
+    borderRadius: 999,
+
+    textTransform: "uppercase",
+    lineHeight: 1,
+  }}
+>
+  {product.tag}
+</span>
           )}
         </div>
 

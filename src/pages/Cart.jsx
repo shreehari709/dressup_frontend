@@ -6,7 +6,17 @@ import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
   const { cart, updateQty, removeFromCart } = useCart();
-  const navigate = useNavigate();
+const navigate = useNavigate();
+
+const token = localStorage.getItem("token");
+
+const user = JSON.parse(
+  localStorage.getItem("user") || "{}"
+);
+
+const isLoggedIn = !!token;
+
+
   const subtotal = cart.reduce(
     (sum, item) => sum + item.price * item.qty,
     0
@@ -16,15 +26,42 @@ export default function Cart() {
 const [loginError, setLoginError] = useState("");
 
 const handleCheckout = () => {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
+  if (!isLoggedIn) {
     setLoginError("Please login before checkout");
     return;
   }
 
-  navigate("/checkout");
+  const checkoutData = {
+    customer: {
+      name: user.name,
+      email: user.email,
+      contactNumber: user.contactNumber,
+    },
+
+    items: cart.map(item => ({
+    productId: item.id,
+    name: item.name,
+    image: item.images?.[0] || item.images,
+    size: item.selectedSize,
+    qty: item.qty,
+    price: item.price
+  })),
+
+  totalItems: cart.reduce(
+    (sum, item) => sum + item.qty,
+    0
+  ),
+
+  subtotal,
+  shipping,
+  total
 };
+
+  navigate("/checkout", {
+    state: checkoutData,
+  });
+};
+
 
   const shipping = subtotal > 3000 ? 0 : 99;
 
@@ -149,7 +186,7 @@ const handleCheckout = () => {
               }}
             >
               <img
-                src={item.image}
+                src={item.images?.[0] || item.images}
                 alt={item.name}
                 style={{
                   width: "100%",
@@ -467,47 +504,32 @@ const handleCheckout = () => {
 >
   Checkout → ₹{total.toLocaleString()}
 </button>
-{loginError && (
-  <p
+
+{!isLoggedIn && (
+  <div
     style={{
-      position: "relative",
+      display: "flex",
+      justifyContent: "center",
       marginTop: 10,
-      textAlign: "center",
-      color: "#e53935",
-      fontSize: 13,
-      fontWeight: 500,
-      background: "#fff0f0",
-      padding: "10px 12px",
-      borderRadius: 12,
-      border: "1px solid #ffd6d6",
     }}
   >
-    {loginError}
-  </p>
+    <button
+      onClick={() => navigate("/auth")}
+      style={{
+        color: "#FFFFFF",
+        fontSize: 13,
+        fontWeight: 500,
+        background: "#000000",
+        padding: "10px 16px",
+        borderRadius: 12,
+        border: "1px solid #ffd6d6",
+        cursor: "pointer",
+      }}
+    >
+      Login / Register
+    </button>
+  </div>
 )}
-      <div
-  style={{
-    display: "flex",
-    justifyContent: "center",
-    marginTop: 10,
-  }}
->
-  <button
-    onClick={() => navigate("/auth")}
-    style={{
-      color: "#FFFFFF",
-      fontSize: 13,
-      fontWeight: 500,
-      background: "#000000",
-      padding: "10px 16px",
-      borderRadius: 12,
-      border: "1px solid #ffd6d6",
-      cursor: "pointer",
-    }}
-  >
-    Login / Register
-  </button>
-</div>
       </div>
     </div>
   );

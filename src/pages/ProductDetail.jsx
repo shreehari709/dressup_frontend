@@ -1,16 +1,20 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { products } from "../data/Product";
 import AddToCartButton from "../components/AddToCartButton";
-
+import SizeChart from "../components/SizeChart";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-
+const [currentImage, setCurrentImage] = useState(0);
   const product = products.find(
     (item) => item.id === Number(id)
   );
-
+useEffect(() => {
+  setCurrentImage(0);
+}, [product]);
   const [selectedSize, setSelectedSize] = useState("");
 
   const sizes = ["S", "M", "L", "XL"];
@@ -88,24 +92,143 @@ export default function ProductDetail() {
         }}
       >
         {/* Product Image */}
-        <div
-          style={{
-            background: "#f3f3f3",
-            borderRadius: 24,
-            overflow: "hidden",
-            height: 480,
-          }}
-        >
-          <img
-            src={product.image}
-            alt={product.name}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
-        </div>
+    {/* <div
+  style={{
+    position: "relative",
+    background: "#f3f3f3",
+    borderRadius: 24,
+    overflow: "hidden",
+    height: 480,
+  }}
+>
+  <img
+    src={product.images[currentImage]}
+    alt={product.name}
+    style={{
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+    }}
+  /> */}
+
+  {/* Previous Button */}
+  {/* {product.images.length > 1 && (
+    <button
+      onClick={() =>
+        setCurrentImage((prev) =>
+          prev === 0
+            ? product.images.length - 1
+            : prev - 1
+        )
+      }
+      style={{
+        position: "absolute",
+        left: 10,
+        top: "50%",
+        transform: "translateY(-50%)",
+        width: 40,
+        height: 40,
+        borderRadius: "50%",
+        border: "none",
+        background: "rgba(255,255,255,0.8)",
+        cursor: "pointer",
+        fontSize: 20,
+      }}
+    >
+      ❮
+    </button>
+  )} */}
+
+  {/* Next Button */}
+  {/* {product.images.length > 1 && (
+    <button
+      onClick={() =>
+        setCurrentImage((prev) =>
+          prev === product.images.length - 1
+            ? 0
+            : prev + 1
+        )
+      }
+      style={{
+        position: "absolute",
+        right: 10,
+        top: "50%",
+        transform: "translateY(-50%)",
+        width: 40,
+        height: 40,
+        borderRadius: "50%",
+        border: "none",
+        background: "rgba(255,255,255,0.8)",
+        cursor: "pointer",
+        fontSize: 20,
+      }}
+    >
+      ❯
+    </button>
+  )}
+</div> */}
+
+<Swiper
+  spaceBetween={0}
+  slidesPerView={1}
+>
+  {product.images.map((img, index) => (
+    <SwiperSlide key={index}>
+      <div
+  style={{
+    width: "100%",
+    aspectRatio: "4 / 5",
+    overflow: "hidden",
+    borderRadius: 24,
+    background: "#f3f3f3",
+  }}
+>
+  <img
+    src={img}
+    alt={product.name}
+    style={{
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+    }}
+  />
+</div>
+    </SwiperSlide>
+  ))}
+</Swiper>
+
+
+{/* Thumbnail Images */}
+{/* <div
+  style={{
+    display: "flex",
+    gap: 10,
+    marginTop: 12,
+    overflowX: "auto",
+  }}
+>
+  {product.images.map((img, index) => (
+    <img
+      key={index}
+      src={img}
+      alt={`thumb-${index}`}
+      onClick={() => setCurrentImage(index)}
+      style={{
+        width: 70,
+        height: 70,
+        objectFit: "cover",
+        borderRadius: 12,
+        cursor: "pointer",
+        border:
+          currentImage === index
+            ? "2px solid black"
+            : "2px solid #eee",
+      }}
+    />
+  ))}
+</div> */}
+
+
 
         {/* Product Info */}
         <div style={{ marginTop: 18 }}>
@@ -131,7 +254,7 @@ export default function ProductDetail() {
           </p>
 
           {/* Rating */}
-          <div
+          {/* <div
             style={{
               display: "flex",
               alignItems: "center",
@@ -149,7 +272,7 @@ export default function ProductDetail() {
             >
               {product.rating} ({product.reviews} Reviews)
             </span>
-          </div>
+          </div> */}
 
           {/* Price */}
           <div
@@ -203,6 +326,10 @@ export default function ProductDetail() {
               with modern design and comfortable fabric.
             </p>
           </div>
+
+
+
+           
 
           {/* Size Selector */}
           <div style={{ marginTop: 24 }}>
@@ -268,9 +395,15 @@ export default function ProductDetail() {
           selectedSize={selectedSize}
         />
       </div>
+
       </div>
 
-     
+          <div>
+      {/* Product Details */}
+
+      <SizeChart />
+    </div>
+
     </div>
   );
 }

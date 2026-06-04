@@ -77,10 +77,7 @@ export default function BottomNavbar() {
     left-0
     w-screen
     z-50
-    bg-linear-to-r
-    from-pink-100
-    via-rose-100
-    to-pink-200
+    bg-white
     backdrop-blur-lg
     border-b
     border-pink-200/50

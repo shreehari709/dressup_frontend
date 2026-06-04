@@ -1,7 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
 import { backendUrl } from "../config";
+import { useNavigate } from "react-router-dom";
+
 export default function Register() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -10,30 +14,116 @@ export default function Register() {
     confirmPassword: "",
   });
 
-
+const [passwordError, setPasswordError] = useState("");
 
 const handleSubmit = async (e) => {
+
   e.preventDefault();
+
+   if (form.password !== form.confirmPassword) {
+  setPasswordError("Passwords do not match");
+  return;
+}
+
+setPasswordError("");
+
+  if (form.password.length < 8) {
+    setPasswordError("Password must be at least 8 characters");
+    return;
+  }
+
+  setLoading(true);
 
   try {
     const res = await axios.post(
       `${backendUrl}/auth/register`,
       {
-        name: form.name,
-        email: form.email,
-        contactNumber: form.contactNumber,
-        password: form.password,
+      name: form.name,
+  email: form.email,
+  contactNumber: form.contactNumber,
+  password: form.password,
+  confirmPassword: form.confirmPassword,
       }
     );
 
-    alert(res.data.message);
+    localStorage.setItem(
+      "token",
+      res.data.token
+    );
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(res.data.user)
+    );
+
+    setPasswordError("");
+    alert("🎉 Account Created Successfully");
+
+    navigate("/profile");
   } catch (error) {
     alert(
       error.response?.data?.message ||
-        "Registration Failed"
+      "Registration Failed"
     );
+  } finally {
+    setLoading(false);
   }
 };
+
+
+<>
+  {loading && (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100vh",
+        background: "#ffffff",
+        zIndex: 99999,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        style={{
+          width: "220px",
+          height: "2px",
+          background: "#e5e5e5",
+          overflow: "hidden",
+          position: "relative",
+        }}
+      >
+        <div
+          style={{
+            width: "40%",
+            height: "100%",
+            background: "#000",
+            position: "absolute",
+            animation: "loadingBar 1s linear infinite",
+          }}
+        />
+      </div>
+
+      <p
+        style={{
+          marginTop: 18,
+          color: "#000",
+          fontSize: 14,
+          letterSpacing: 1,
+        }}
+      >
+        Creating Account...
+      </p>
+    </div>
+  )}
+
+  {/* Your existing registration form */}
+</>
+
 
 
   return (
@@ -115,14 +205,18 @@ const handleSubmit = async (e) => {
           }
           className="w-full px-4 py-3 rounded-xl border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300"
         />
+        {passwordError && (
+          <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+        )}
       </div>
 
       <button
-        type="submit"
-        className="w-full bg-black text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
-      >
-        Create Account
-      </button>
+  type="submit"
+  disabled={loading}
+  className="w-full bg-black text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
+>
+  {loading ? "Creating Account..." : "Create Account"}
+</button>
     </form>
   );
 }

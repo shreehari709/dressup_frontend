@@ -1,69 +1,183 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import CheckoutForm from "../components/CheckoutForm";
 import { useCart } from "../context/CartContext";
 import { useOrders } from "../context/OrderContext";
-import PaymentSuccess from "./PaymentSuccess";
-import PaymentFailed from "./PaymentFailed";
-import { Axis3DIcon } from "lucide-react";
-import axios from "axios";
+import { backendUrl, razorpayKeyId } from "../config";
 
 export default function Checkout() {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // useEffect(() => {
-  //   const fetchRazorpay = async () => {
-  //     const responseRazorpay = await axios.post(backend_ur + "/order/placeorder/razorpay");
-
-  //     if (responseRazorpay.data.success) {
-  //       console.log(responseRazorpay.data.message);
-  //     }
-  //   };
-
-  //   fetchRazorpay();
-  // }, []);
-
-  const { cart, totalPrice, clearCart } = useCart();
-
+  const { clearCart } = useCart();
   const { placeOrder } = useOrders();
 
+  const orderData = location.state;
+
+  const [formData, setFormData] = useState({
+    name: orderData?.name || "",
+    address: "",
+    city: "",
+    state: "",
+    contact: orderData?.contactNumber || "",
+    pincode: "",
+  });
+
+  const total = orderData?.total || 0;
 
 
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [contact, setContact] = useState("");
-  const [pin, setPin] = useState("");
-  const [upi, setUpi] = useState("");
 
-  const handlePayment = () => {
-    if (!name || !address || !pin || !upi) {
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script =
+        document.createElement("script");
+
+      script.src =
+        "https://checkout.razorpay.com/v1/checkout.js";
+
+      script.onload = () => resolve(true);
+
+      script.onerror = () => resolve(false);
+
+      document.body.appendChild(script);
+    });
+  };
+
+  const handlePayment = async () => {
+    if (
+      !formData.name ||
+      !formData.address ||
+      !formData.city ||
+      !formData.state ||
+      !formData.contact ||
+      !formData.pincode
+    ) {
       alert("Please fill all fields");
       return;
     }
 
-    const success = Math.random() > 0.3;
+    const loaded =
+      await loadRazorpay();
 
-    if (success) {
-      const order = {
-        id: "ORD" + Date.now(),
-        items: cart,
-        total: totalPrice,
-        customer: name,
-        address,
-        pin,
-        paymentMethod: "UPI",
-        date: new Date().toLocaleDateString(),
-        deliveryDate: new Date(
-          Date.now() + 5 * 24 * 60 * 60 * 1000
-        ).toLocaleDateString(),
+    if (!loaded) {
+      alert(
+        "Failed to load Razorpay"
+      );
+      return;
+    }
+
+    try {
+      const response =
+        await axios.post(
+          `${backendUrl}/order/razorpay`,
+          {
+            amount: total,
+            items: orderData.items,
+            address: formData,
+          }
+        );
+
+      const order =
+        response.data.order;
+
+      const options = {
+        key: razorpayKeyId,
+        amount: order.amount,
+
+        currency: order.currency,
+
+        name: "Phool Si Pyari",
+
+        description:
+          "Order Payment",
+
+        order_id: order.id,
+
+        handler: async function (
+          paymentResponse
+        ) {
+          const newOrder = {
+            orderId:
+              paymentResponse.razorpay_payment_id,
+
+            items:
+              orderData.items,
+
+            customer:
+              formData.name,
+
+            email:
+              orderData.email,
+
+            contact:
+              formData.contact,
+
+            address:
+              formData.address,
+
+            total,
+
+            date:
+              new Date().toLocaleDateString(),
+
+            deliveryDate:
+              new Date(
+                Date.now() +
+                  5 *
+                    24 *
+                    60 *
+                    60 *
+                    1000
+              ).toLocaleDateString(),
+          };
+
+          placeOrder(newOrder);
+
+          clearCart();
+
+          navigate(
+            "/payment-success"
+          );
+        },
+
+        prefill: {
+          name:
+            formData.name,
+
+          email:
+            orderData.email,
+
+          contact:
+            formData.contact,
+        },
+
+        theme: {
+          color: "#C9848A",
+        },
       };
 
-      placeOrder(order);
+      const razor =
+        new window.Razorpay(
+          options
+        );
 
-      clearCart();
+      razor.on(
+        "payment.failed",
+        () => {
+          navigate(
+            "/payment-failed"
+          );
+        }
+      );
 
-      navigate("/payment-success");
-    } else {
-      navigate("/payment-failed");
+      razor.open();
+    } catch (error) {
+      console.log(error);
+
+      alert(
+        "Payment initialization failed"
+      );
     }
   };
 
@@ -73,84 +187,15 @@ export default function Checkout() {
         background: "#FAF9F6",
         minHeight: "100vh",
         padding: 20,
-        fontWeight: 700,
-        marginTop: 70 
+        marginTop: 70,
       }}
     >
-         {/* <button
-      onClick={() => navigate("/auth")}
-      className="
-        fixed
-        top-4
-        right-4
-        z-50
-        bg-linear-to-r
-        from-pink-400
-        to-rose-400
-        text-white
-        px-5
-        py-2.5
-        rounded-full
-        font-semibold
-        text-sm
-        shadow-lg
-        hover:scale-105
-        transition-all
-        duration-300
-      "
-    >
-      Login/Register
-    </button> */}
-
       <h2>Checkout</h2>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 16,
-          marginTop: 20,
-        }}
-      >
-        <input
-          placeholder="Full Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={inputStyle}
-        />
-
-        <textarea
-          placeholder="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          style={{
-            ...inputStyle,
-            minHeight: 100,
-          }}
-        />
-
-        <input
-          placeholder="Contact Number"
-          value={contact}
-          onChange={(e) => setContact(e.target.value)}
-          style={inputStyle}
-        />
-      
-
-        <input
-          placeholder="Pin Code"
-          value={pin}
-          onChange={(e) => setPin(e.target.value)}
-          style={inputStyle}
-        />
-{/* 
-        <input
-          placeholder="UPI ID"
-          value={upi}
-          onChange={(e) => setUpi(e.target.value)}
-          style={inputStyle}
-        /> */}
-      </div>
+      <CheckoutForm
+        formData={formData}
+        setFormData={setFormData}
+      />
 
       <div
         style={{
@@ -160,7 +205,10 @@ export default function Checkout() {
           borderRadius: 20,
         }}
       >
-        <h3>Total: ₹{totalPrice}</h3>
+        <h3>
+          Total : ₹
+          {total.toLocaleString()}
+        </h3>
 
         <button
           onClick={handlePayment}
@@ -180,26 +228,4 @@ export default function Checkout() {
       </div>
     </div>
   );
-
-  const UpdateProfile = (name, address, contact) => {
-    // Logic to update the user's profile information
-    // This could involve making an API call to the backend to save the updated details
-    console.log("Profile Updated:", { name, address, contact });
-  };
-  
-  if(checkoutSuccess) {
-    return <PaymentSuccess />;
-  } else if(checkoutFailed) {
-    return <PaymentFailed />;
-  }  
-
 }
-
-const inputStyle = {
-  padding: 16,
-  borderRadius: 14,
-  border: "1px solid #ddd",
-  outline: "none",
-  fontSize: 14,
-  background: "white",
-};

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { products } from "../data/Product";
 import { useCart } from "../context/CartContext";
+import SizeChart from "../components/SizeChart";
 
 const sizeGuide = [
   { size: "XS", chest: "32", waist: "26", hip: "35" },
@@ -227,6 +228,14 @@ const handleAddToBag = () => {
           </div>
         </div>
       </div>
+
+
+  <div>
+      {/* Product Details */}
+
+      <SizeChart />
+    </div>
+
 
       {/* Add to Bag CTA */}
    {/* Add to Bag CTA */}
